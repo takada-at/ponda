@@ -1,35 +1,48 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from .data import Domain, Message
-def converttolist(objects, keepcomment=True):
+
+def converttocsv(fio, listdata):
+    for row in listdata:
+        line = "\t".join(map(unicode, row)) + "\n"
+        fio.write(line)
+
+def converttolist(objects, includecomment=True):
     res = []
     for obj in objects:
-        res += convertobj
+        res += convertobj(obj, includecomment=includecomment)
 
-def convertobj(obj, keepcomment=True):
+    return res
+
+def convertobj(obj, includecomment=True):
     klass = obj.__class__
     if klass is str or klass is unicode:
-        if keepcomment:
+        if includecomment:
             return [[obj]]
         else:
             return []
     elif klass is Domain:
-        if keepcomment:
+        if includecomment:
             return [["# domain: {value}".format(value=obj.value)]]
         else:
             return []
     elif klass is Message:
-        return convertmessage(obj, keepcomment=keepcomment)
+        return convertmessage(obj, includecomment=includecomment)
 
-def convertmessage(message, keepcomment=True):
+def convertmessage(message, includecomment=True):
     res = []
-    if message.prev and keepcomment:
-        vals = convertmsgid(message.prev)
-        vals = [["# " + row[0]] for row in vals]
+    if message.prev and includecomment:
+        vals = []
+        if message.prev.ctxt:
+            vals.append(['#| msgctxt {}'.format(message.prev.ctxt)])
+
+        vals.append(['#| msgid {}'.format(message.prev.value)])
         res += vals
 
-    if not message.has_plural:
+    if message.msgid.value=='' and not includecomment:
+        pass
+    elif not message.has_plural:
         res.append([message.msgid.value, message.msgstr.value])
     else:
         items = message.msgstr.items
@@ -38,3 +51,5 @@ def convertmessage(message, keepcomment=True):
                 res.append([message.msgid.value, msg, num])
             else:
                 res.append([message.msgid.pluralform, msg, num])
+
+    return res

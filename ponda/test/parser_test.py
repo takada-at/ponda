@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function, unicode_literals
 
-from __future__ import print_function
-from __future__ import unicode_literals
-import testbase
-testbase
-
-from ponda import parser
+from .. import parser
 parser.debug = 1
 data0 = ur"""
 

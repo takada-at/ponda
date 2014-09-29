@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 import os
 __DIR__ = os.path.abspath(os.path.dirname(__file__))
 
@@ -277,10 +275,9 @@ def p_prev_string_list(p):
     else:
         p[0] = p[1] + p[2]
 
-start = 'po_file'
+start = str('po_file')
 lexer = lex.lex(debug=DEBUG)
 parser = yacc.yacc(outputdir=__DIR__, debug=DEBUG, write_tables=False)
-
 
 def parse(f):
     ret = parser.parse(f.read())
