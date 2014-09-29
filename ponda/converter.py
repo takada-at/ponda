@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function, unicode_literals
-
+import csv
 from .data import Domain, Message
 
-def converttocsv(fio, listdata):
+def converttocsv(fio, listdata, sep='\t'):
     for row in listdata:
-        line = "\t".join(map(unicode, row)) + "\n"
+        row = [unicode(val) for val in row]
+        line = sep.join(row) + u"\n"
         fio.write(line)
 
 def converttolist(objects, includecomment=True):

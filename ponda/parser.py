@@ -43,19 +43,11 @@ states = (
 def t_PREV_START(t):
     r'\#\|'
     t.lexer.begin('prev')
+    return t
 
 def t_COMMENT(t):
     r'\#.*\n'
-    comments = t.value
-    controlch = comments[1]
-    if controlch == '.': # extracted-comments
-        pass
-    elif controlch == ':': # reference
-        pass
-    elif controlch == ',': # flag
-        pass
-    else:
-        pass # translator-comment
+    t.value = t.value[:-1]
     return t
 
 def t_STRING(t):
@@ -219,13 +211,13 @@ def p_msg_intro(p):
 
 def p_prev_msg_intro(p):
     """
-    prev_msg_intro : PREV_MSGID
-                   | PREV_MSGCTXT prev_string_list PREV_MSGID
+    prev_msg_intro : PREV_START PREV_MSGID
+                   | PREV_START PREV_MSGCTXT prev_string_list PREV_START PREV_MSGID
     """
-    if len(p)==2:
+    if len(p)==3:
         return
     else:
-        p[0] = p[2]
+        p[0] = p[3]
 
 def p_msgid_pluralform(p):
     """
